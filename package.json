@@ -1,11 +1,11 @@
 {
   "name": "omo-router",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": false,
   "type": "module",
   "bin": {
-    "omo-router": "./provider-switch.mjs",
-    "omo-deepinfra-setup": "./setup.mjs"
+    "omo-router": "omo-router",
+    "omo-deepinfra-setup": "omo-deepinfra-setup"
   },
   "files": [
     "README.md",
@@ -13,6 +13,8 @@
     "get-deepinfra-key.mjs",
     "get-provider-key.mjs",
     "install.mjs",
+    "omo-deepinfra-setup",
+    "omo-router",
     "provider-presets.mjs",
     "provider-switch.mjs",
     "setup.mjs",
