@@ -8,7 +8,7 @@ the repository.
 
 ## What it does
 
-- Registers `deepinfra/deepseek-ai/DeepSeek-V4.1-Flash`.
+- Registers a curated set of DeepSeek, Qwen Coder, and GLM models.
 - Uses DeepInfra's Anthropic Messages-compatible endpoint.
 - Reads an existing CC Switch `DeepInfra DeepSeek` token locally at request time.
 - Restores OMO's Fable/Opus aliases to the authenticated xAI Grok fallback.
@@ -47,6 +47,7 @@ The installer creates timestamped backups before changing:
 
 - `~/.omo/agent/models.json`
 - `~/.omo/omo.jsonc`
+- `~/.omo/agent/settings.json` (only the native default provider/model)
 
 It never writes a key into this repository. The request-time resolver only
 prints the key to the provider process's stdout.
@@ -57,6 +58,7 @@ prints the key to the provider process's stdout.
 omo --list-models deepinfra
 omo auth check --provider deepinfra --no-refresh --json
 omo --model deepinfra/deepseek-ai/DeepSeek-V4.1-Flash -p "Reply DEEPINFRA_OK"
+omo --model deepinfra/Qwen/Qwen3-Coder-480B-A35B-Instruct-Turbo -p "Reply QWEN_OK"
 ```
 
 The resolver supports:
@@ -67,3 +69,8 @@ The resolver supports:
 - `DEEPINFRA_API_KEY` override
 
 No Anthropic OAuth refresh is used for the DeepInfra provider.
+
+The catalog is intentionally curated rather than copied wholesale from
+DeepInfra's changing model list. Add or remove entries in `install.mjs`, then
+rerun the installer. OMO model selection uses the normal
+`deepinfra/<model-id>` form.

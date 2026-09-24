@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process"
-import { mkdtempSync, readFileSync } from "node:fs"
+import { mkdtempSync, readFileSync, writeFileSync, mkdirSync } from "node:fs"
 import { homedir } from "node:os"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
@@ -18,6 +18,11 @@ test("resolver prefers an explicit API key without printing diagnostics", () => 
 
 test("installer writes a custom Anthropic provider and xAI fallback aliases", () => {
   const tempHome = mkdtempSync(join(homedir(), ".omo-deepinfra-test-"))
+  mkdirSync(join(tempHome, ".omo", "agent"), { recursive: true })
+  writeFileSync(
+    join(tempHome, ".omo", "agent", "settings.json"),
+    JSON.stringify({ defaultProvider: "anthropic", defaultModel: "claude-opus" }),
+  )
   execFileSync("node", [join(rootPath, "install.mjs")], {
     cwd: rootPath,
     env: {
@@ -33,6 +38,17 @@ test("installer writes a custom Anthropic provider and xAI fallback aliases", ()
   assert.equal(models.providers.deepinfra.api, "anthropic-messages")
   assert.match(models.providers.deepinfra.apiKey, /^!node "/)
   assert.equal(models.providers.deepinfra.models[0].id, "deepseek-ai/DeepSeek-V4.1-Flash")
+  assert.ok(models.providers.deepinfra.models.length >= 5)
+  assert.ok(
+    models.providers.deepinfra.models.some(
+      (model) => model.id === "Qwen/Qwen3-Coder-480B-A35B-Instruct-Turbo",
+    ),
+  )
+  const settings = JSON.parse(
+    readFileSync(join(tempHome, ".omo", "agent", "settings.json"), "utf8"),
+  )
+  assert.equal(settings.defaultProvider, "xai")
+  assert.equal(settings.defaultModel, "grok-4.5")
 })
 
 test("setup stores a key outside the package tree", () => {
