@@ -10,20 +10,23 @@ import {
 import { homedir } from "node:os"
 import { join } from "node:path"
 import process from "node:process"
+import { fileURLToPath } from "node:url"
 import {
   getModel,
   getProvider,
   providerModelConfig,
   PROVIDER_PRESETS,
 } from "./provider-presets.mjs"
+import { fetchProviderModels } from "./model-catalog.mjs"
 
 const home = process.env.OMO_DEEPINFRA_HOME || homedir()
 const agentDir = process.env.OMO_CODING_AGENT_DIR || join(home, ".omo", "agent")
 const modelsPath = join(agentDir, "models.json")
 const settingsPath = join(agentDir, "settings.json")
 const omoConfig = join(home, ".omo", "omo.jsonc")
-const resolverPath = join(process.cwd(), "get-provider-key.mjs")
-const deepinfraResolver = join(process.cwd(), "get-deepinfra-key.mjs")
+const packageDir = fileURLToPath(new URL(".", import.meta.url))
+const resolverPath = join(packageDir, "get-provider-key.mjs")
+const deepinfraResolver = join(packageDir, "get-deepinfra-key.mjs")
 const stamp = new Date().toISOString().replaceAll(/[-:.TZ]/g, "").slice(0, 14)
 
 function readJson(path, fallback) {
@@ -40,6 +43,7 @@ function usage() {
   omo-provider list
   omo-provider current
   omo-provider key <provider>
+  omo-provider sync <provider>
   omo-provider use <provider> [preset]
   omo-provider use <provider> --model <model-id>
 `)
@@ -81,6 +85,21 @@ function storeKey(provider) {
   const keyPath = join(agentDir, `${provider}-api-key`)
   writeFileSync(keyPath, `${key}\n`, { encoding: "utf8", mode: 0o600 })
   console.log(`Stored ${provider} key at ${keyPath}`)
+  return syncProviderModels(provider, key)
+}
+
+async function syncProviderModels(provider, key) {
+  const discovered = await fetchProviderModels(provider, key)
+  const models = readJson(modelsPath, {})
+  models.providers = models.providers || {}
+  backup(modelsPath)
+  models.providers[provider] = providerModelConfig(
+    provider,
+    provider === "deepinfra" ? deepinfraResolver : resolverPath,
+    [...(models.providers[provider]?.models || []), ...discovered],
+  )
+  writeFileSync(modelsPath, `${JSON.stringify(models, null, 2)}\n`, "utf8")
+  console.log(`Registered ${discovered.length} models for ${provider}`)
 }
 
 function updateAliases(text, target) {
@@ -103,6 +122,7 @@ function useProvider(provider, preset, modelId) {
   models.providers[provider] = providerModelConfig(
     provider,
     provider === "deepinfra" ? deepinfraResolver : resolverPath,
+    models.providers[provider]?.models || [],
   )
   writeFileSync(modelsPath, `${JSON.stringify(models, null, 2)}\n`, "utf8")
 
@@ -123,26 +143,48 @@ function useProvider(provider, preset, modelId) {
 }
 
 const [command, provider, ...rest] = process.argv.slice(2)
-if (!command || command === "--help" || command === "-h") {
-  usage()
-} else if (command === "list") {
-  list()
-} else if (command === "current") {
-  current()
-} else if (command === "key") {
-  storeKey(provider)
-} else if (command === "use") {
-  const modelFlag = rest.indexOf("--model")
-  const modelId = modelFlag >= 0 ? rest[modelFlag + 1] : undefined
-  const preset = modelFlag >= 0 ? undefined : rest[0]
-  if (!provider) {
+
+async function main() {
+  if (!command || command === "--help" || command === "-h") {
+    usage()
+  } else if (command === "list") {
+    list()
+  } else if (command === "current") {
+    current()
+  } else if (command === "key") {
+    try {
+      await storeKey(provider)
+    } catch (error) {
+      console.error(`Stored ${provider} key, but model discovery failed: ${error.message}`)
+      process.exitCode = 1
+    }
+  } else if (command === "sync") {
+    const keyPath = join(agentDir, `${provider}-api-key`)
+    try {
+      const config = getProvider(provider)
+      const key = process.env[config.envKey] ||
+        (existsSync(keyPath) ? readFileSync(keyPath, "utf8").trim() : "")
+      if (!key) throw new Error(`${config.envKey} not found`)
+      await syncProviderModels(provider, key)
+    } catch (error) {
+      console.error(`Model discovery failed: ${error.message}`)
+      process.exitCode = 1
+    }
+  } else if (command === "use") {
+    const modelFlag = rest.indexOf("--model")
+    const modelId = modelFlag >= 0 ? rest[modelFlag + 1] : undefined
+    const preset = modelFlag >= 0 ? undefined : rest[0]
+    if (!provider) {
+      usage()
+      process.exitCode = 1
+    } else {
+      useProvider(provider, preset, modelId)
+    }
+  } else {
+    console.error(`Unknown command: ${command}`)
     usage()
     process.exitCode = 1
-  } else {
-    useProvider(provider, preset, modelId)
   }
-} else {
-  console.error(`Unknown command: ${command}`)
-  usage()
-  process.exitCode = 1
 }
+
+await main()

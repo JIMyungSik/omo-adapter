@@ -5,6 +5,8 @@ import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { test } from "node:test"
 import assert from "node:assert/strict"
+import { fetchProviderModels } from "../model-catalog.mjs"
+import { providerModelConfig } from "../provider-presets.mjs"
 
 const rootPath = fileURLToPath(new URL("..", import.meta.url)).replace(/[\\/]$/, "")
 
@@ -14,6 +16,46 @@ test("resolver prefers an explicit API key without printing diagnostics", () => 
     encoding: "utf8",
   })
   assert.equal(result, "test-key")
+})
+
+test("model discovery normalizes a provider catalog without exposing the key", async () => {
+  let request
+  const discovered = await fetchProviderModels(
+    "openrouter",
+    "catalog-secret",
+    async (url, options) => {
+      request = { url, options }
+      return new Response(
+        JSON.stringify({
+          data: [
+            {
+              id: "vendor/new-model",
+              name: "New Model",
+              context_length: 200000,
+              max_completion_tokens: 16000,
+              architecture: { input_modalities: ["text", "image"] },
+            },
+          ],
+        }),
+        { status: 200, headers: { "content-type": "application/json" } },
+      )
+    },
+  )
+
+  assert.equal(request.url, "https://openrouter.ai/api/v1/models")
+  assert.equal(request.options.headers.authorization, "Bearer catalog-secret")
+  assert.equal(discovered[0].id, "vendor/new-model")
+  assert.equal(discovered[0].contextWindow, 200000)
+  assert.deepEqual(discovered[0].input, ["text", "image"])
+  assert.doesNotMatch(JSON.stringify(discovered), /catalog-secret/)
+
+  const config = providerModelConfig(
+    "openrouter",
+    "/tmp/get-provider-key.mjs",
+    discovered,
+  )
+  assert.ok(config.models.some((model) => model.id === "vendor/new-model"))
+  assert.ok(config.models.some((model) => model.id === "deepseek/deepseek-chat-v3-0324:free"))
 })
 
 test("installer writes a custom Anthropic provider and DeepInfra aliases", () => {
@@ -141,8 +183,18 @@ test("router lists presets and switches provider without printing keys", () => {
   const keyOutput = execFileSync(
     "node",
     [join(rootPath, "provider-switch.mjs"), "key", "together"],
-    { env: { ...env, TOGETHER_API_KEY: "do-not-print-this" }, encoding: "utf8" },
+    {
+      env: {
+        ...env,
+        TOGETHER_API_KEY: "do-not-print-this",
+        OMO_MODEL_CATALOG_URL:
+          "data:application/json,%7B%22data%22%3A%5B%7B%22id%22%3A%22vendor%2Fdiscovered%22%7D%5D%7D",
+      },
+      encoding: "utf8",
+    },
   )
   assert.doesNotMatch(keyOutput, /do-not-print-this/)
   assert.equal(readFileSync(join(agentDir, "together-api-key"), "utf8"), "do-not-print-this\n")
+  const synced = JSON.parse(readFileSync(join(agentDir, "models.json"), "utf8"))
+  assert.ok(synced.providers.together.models.some((model) => model.id === "vendor/discovered"))
 })

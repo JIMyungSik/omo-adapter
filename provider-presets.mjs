@@ -39,6 +39,7 @@ export const PROVIDER_PRESETS = {
     label: "DeepInfra",
     api: "anthropic-messages",
     baseUrl: "https://api.deepinfra.com/anthropic",
+    catalogUrl: "https://api.deepinfra.com/v1/models",
     envKey: "DEEPINFRA_API_KEY",
     defaultPreset: "deepseek-flash",
     models: {
@@ -51,6 +52,7 @@ export const PROVIDER_PRESETS = {
     label: "OpenRouter",
     api: "openai-completions",
     baseUrl: "https://openrouter.ai/api/v1",
+    catalogUrl: "https://openrouter.ai/api/v1/models",
     envKey: "OPENROUTER_API_KEY",
     defaultPreset: "deepseek-free",
     models: {
@@ -68,6 +70,7 @@ export const PROVIDER_PRESETS = {
     label: "Together AI",
     api: "openai-completions",
     baseUrl: "https://api.together.ai/v1",
+    catalogUrl: "https://api.together.ai/v1/models",
     envKey: "TOGETHER_API_KEY",
     defaultPreset: "minimax",
     models: {
@@ -82,6 +85,7 @@ export const PROVIDER_PRESETS = {
     label: "Groq",
     api: "openai-completions",
     baseUrl: "https://api.groq.com/openai/v1",
+    catalogUrl: "https://api.groq.com/openai/v1/models",
     envKey: "GROQ_API_KEY",
     defaultPreset: "llama",
     models: {
@@ -93,6 +97,7 @@ export const PROVIDER_PRESETS = {
     label: "OpenGateway",
     api: "openai-completions",
     baseUrl: "https://apis.opengateway.ai/v1",
+    catalogUrl: "https://apis.opengateway.ai/v1/models",
     envKey: "OPENGATEWAY_API_KEY",
     defaultPreset: "deepseek-fast",
     models: {
@@ -142,9 +147,13 @@ export function getModel(provider, preset = undefined, modelId = undefined) {
   return selected
 }
 
-export function providerModelConfig(provider, resolverPath) {
+export function providerModelConfig(provider, resolverPath, existingModels = []) {
   const config = getProvider(provider)
-  const models = Object.values(config.models).map((model) => ({
+  const curatedModels = Object.values(config.models)
+  const modelsById = new Map(
+    [...curatedModels, ...existingModels].map((model) => [model.id, model]),
+  )
+  const models = [...modelsById.values()].map((model) => ({
     ...model,
     cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
   }))
