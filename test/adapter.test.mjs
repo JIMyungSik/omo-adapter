@@ -49,6 +49,7 @@ test("installer writes a custom Anthropic provider and xAI fallback aliases", ()
   )
   assert.equal(settings.defaultProvider, "deepinfra")
   assert.equal(settings.defaultModel, "deepseek-ai/DeepSeek-V4.1-Flash")
+  assert.deepEqual(settings.recommendedModels, ["deepinfra/deepseek-ai/DeepSeek-V4.1-Flash"])
 })
 
 test("setup stores a key outside the package tree", () => {

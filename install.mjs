@@ -59,6 +59,7 @@ if (existsSync(settingsPath)) {
   const settings = JSON.parse(readFileSync(settingsPath, "utf8"))
   settings.defaultProvider = "deepinfra"
   settings.defaultModel = "deepseek-ai/DeepSeek-V4.1-Flash"
+  settings.recommendedModels = ["deepinfra/deepseek-ai/DeepSeek-V4.1-Flash"]
   writeFileSync(settingsPath, `${JSON.stringify(settings, null, 2)}\n`, "utf8")
 }
 
