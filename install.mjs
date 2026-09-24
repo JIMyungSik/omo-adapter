@@ -57,8 +57,8 @@ writeFileSync(modelsPath, `${JSON.stringify(models, null, 2)}\n`, "utf8")
 
 if (existsSync(settingsPath)) {
   const settings = JSON.parse(readFileSync(settingsPath, "utf8"))
-  settings.defaultProvider = "xai"
-  settings.defaultModel = "grok-4.5"
+  settings.defaultProvider = "deepinfra"
+  settings.defaultModel = "deepseek-ai/DeepSeek-V4.1-Flash"
   writeFileSync(settingsPath, `${JSON.stringify(settings, null, 2)}\n`, "utf8")
 }
 
@@ -91,4 +91,4 @@ console.log(`Installed DeepInfra provider for ${platform()}`)
 console.log(`models: ${modelsPath}`)
 console.log(`resolver: ${resolverPath}`)
 console.log("Fable/Opus aliases now use xai/grok-4.5")
-console.log("OMO native default now uses xai/grok-4.5")
+console.log("OMO native default now uses deepinfra/deepseek-ai/DeepSeek-V4.1-Flash")

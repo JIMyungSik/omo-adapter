@@ -47,8 +47,8 @@ test("installer writes a custom Anthropic provider and xAI fallback aliases", ()
   const settings = JSON.parse(
     readFileSync(join(tempHome, ".omo", "agent", "settings.json"), "utf8"),
   )
-  assert.equal(settings.defaultProvider, "xai")
-  assert.equal(settings.defaultModel, "grok-4.5")
+  assert.equal(settings.defaultProvider, "deepinfra")
+  assert.equal(settings.defaultModel, "deepseek-ai/DeepSeek-V4.1-Flash")
 })
 
 test("setup stores a key outside the package tree", () => {
