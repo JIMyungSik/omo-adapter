@@ -2,7 +2,7 @@
 
 ## 게시 계정
 
-- Target: `@myungsik.ji`
+- Target: `@myungsikji` (Myungsik Ji; requested alias: `myungsik.ji`)
 - Format: 6장 이미지 카드뉴스 + 본문 캡션
 - Language: Korean
 
