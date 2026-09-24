@@ -27,6 +27,9 @@ const omoConfig = join(home, ".omo", "omo.jsonc")
 const packageDir = fileURLToPath(new URL(".", import.meta.url))
 const resolverPath = join(packageDir, "get-provider-key.mjs")
 const deepinfraResolver = join(packageDir, "get-deepinfra-key.mjs")
+const packageVersion = JSON.parse(
+  readFileSync(join(packageDir, "package.json"), "utf8"),
+).version
 const stamp = new Date().toISOString().replaceAll(/[-:.TZ]/g, "").slice(0, 14)
 
 function readJson(path, fallback) {
@@ -47,6 +50,10 @@ console.log(`Usage:
   omo-router use <provider> [preset]
   omo-router use <provider> --model <model-id>
 `)
+}
+
+function version() {
+  console.log(`omo-router ${packageVersion}`)
 }
 
 function list() {
@@ -145,7 +152,9 @@ function useProvider(provider, preset, modelId) {
 const [command, provider, ...rest] = process.argv.slice(2)
 
 async function main() {
-  if (!command || command === "--help" || command === "-h") {
+  if (command === "--version" || command === "-v" || command === "version") {
+    version()
+  } else if (!command || command === "--help" || command === "-h" || command === "help") {
     usage()
   } else if (command === "list") {
     list()

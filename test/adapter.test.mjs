@@ -29,6 +29,20 @@ test("CLI reports an invalid preset without a stack trace", () => {
   assert.doesNotMatch(result.stderr, /at file:/)
 })
 
+test("CLI exposes version and help commands", () => {
+  const version = spawnSync("node", [join(rootPath, "provider-switch.mjs"), "--version"], {
+    encoding: "utf8",
+  })
+  assert.equal(version.status, 0)
+  assert.match(version.stdout, /^omo-router \d+\.\d+\.\d+\n$/)
+
+  const help = spawnSync("node", [join(rootPath, "provider-switch.mjs"), "--help"], {
+    encoding: "utf8",
+  })
+  assert.equal(help.status, 0)
+  assert.match(help.stdout, /omo-router list/)
+})
+
 test("CLI reports a missing key with the correct command name", () => {
   const result = spawnSync(
     "node",

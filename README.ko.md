@@ -23,7 +23,7 @@ npm install --global omo-router
 전역 설치 없이 실행:
 
 ```bash
-npx --yes omo-router@0.1.5 --help
+npx --yes omo-router@0.1.6 --help
 ```
 
 현재 `omo-deepinfra-adapter` source checkout 폴더 안에서는 package 이름이
@@ -32,7 +32,7 @@ npx --yes omo-router@0.1.5 --help
 
 ```bash
 cd ~
-npx --yes omo-router@0.1.5 list
+npx --yes omo-router@0.1.6 list
 ```
 
 설정 변경 전 다음 파일을 timestamp backup으로 보관합니다.
@@ -79,7 +79,7 @@ PowerShell을 열고 다음 명령을 한 줄씩 실행하세요.
 
 ```powershell
 node --version
-npm install --global omo-router@0.1.5
+npm install --global omo-router@0.1.6
 omo-router --help
 $env:DEEPINFRA_API_KEY="your-deepinfra-key"
 omo-router key deepinfra
@@ -95,9 +95,9 @@ omo
 전역 설치 대신 다음처럼 실행할 수도 있습니다.
 
 ```powershell
-npx --yes omo-router@0.1.5 list
-npx --yes omo-router@0.1.5 key deepinfra
-npx --yes omo-router@0.1.5 use deepinfra deepseek-flash
+npx --yes omo-router@0.1.6 list
+npx --yes omo-router@0.1.6 key deepinfra
+npx --yes omo-router@0.1.6 use deepinfra deepseek-flash
 ```
 
 ## Linux 전체 설치 절차
@@ -106,7 +106,7 @@ npx --yes omo-router@0.1.5 use deepinfra deepseek-flash
 
 ```bash
 node --version
-npm install --global omo-router@0.1.5
+npm install --global omo-router@0.1.6
 omo-router --help
 export DEEPINFRA_API_KEY="your-deepinfra-key"
 omo-router key deepinfra
@@ -288,14 +288,14 @@ omo-router current
 전역 설치를 확인하세요.
 
 ```powershell
-npm install --global omo-router@0.1.5
+npm install --global omo-router@0.1.6
 where.exe omo-router
 ```
 
 Linux에서는:
 
 ```bash
-npm install --global omo-router@0.1.5
+npm install --global omo-router@0.1.6
 which omo-router
 ```
 

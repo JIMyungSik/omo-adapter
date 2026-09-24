@@ -24,7 +24,7 @@ npm install --global omo-router
 Or run it without a global install:
 
 ```sh
-npx --yes omo-router@0.1.5 --help
+npx --yes omo-router@0.1.6 --help
 ```
 
 If you are inside this source checkout, run `npx` from another directory
@@ -32,7 +32,7 @@ because the checkout itself is named `omo-router`. For example:
 
 ```sh
 cd ~
-npx --yes omo-router@0.1.5 list
+npx --yes omo-router@0.1.6 list
 ```
 
 The CLI creates timestamped backups before changing:
@@ -80,7 +80,7 @@ Run these PowerShell commands one at a time:
 
 ```powershell
 node --version
-npm install --global omo-router@0.1.5
+npm install --global omo-router@0.1.6
 omo-router --help
 $env:DEEPINFRA_API_KEY="your-deepinfra-key"
 omo-router key deepinfra
@@ -93,9 +93,9 @@ If OMO is already running, exit and start it again before opening `/model`.
 You can use `npx` instead of a global install:
 
 ```powershell
-npx --yes omo-router@0.1.5 list
-npx --yes omo-router@0.1.5 key deepinfra
-npx --yes omo-router@0.1.5 use deepinfra deepseek-flash
+npx --yes omo-router@0.1.6 list
+npx --yes omo-router@0.1.6 key deepinfra
+npx --yes omo-router@0.1.6 use deepinfra deepseek-flash
 ```
 
 ## Linux quick start
@@ -104,7 +104,7 @@ Run these Bash commands one at a time:
 
 ```bash
 node --version
-npm install --global omo-router@0.1.5
+npm install --global omo-router@0.1.6
 omo-router --help
 export DEEPINFRA_API_KEY="your-deepinfra-key"
 omo-router key deepinfra
@@ -277,14 +277,14 @@ omo-router current
 Install the global CLI and check its location:
 
 ```powershell
-npm install --global omo-router@0.1.5
+npm install --global omo-router@0.1.6
 where.exe omo-router
 ```
 
 On Linux:
 
 ```bash
-npm install --global omo-router@0.1.5
+npm install --global omo-router@0.1.6
 which omo-router
 ```
 
