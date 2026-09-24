@@ -1,4 +1,4 @@
-import { execFileSync } from "node:child_process"
+import { execFileSync, spawnSync } from "node:child_process"
 import { mkdtempSync, readFileSync, writeFileSync, mkdirSync } from "node:fs"
 import { homedir } from "node:os"
 import { join } from "node:path"
@@ -16,6 +16,31 @@ test("resolver prefers an explicit API key without printing diagnostics", () => 
     encoding: "utf8",
   })
   assert.equal(result, "test-key")
+})
+
+test("CLI reports an invalid preset without a stack trace", () => {
+  const result = spawnSync(
+    "node",
+    [join(rootPath, "provider-switch.mjs"), "use", "deepinfra", "not-a-preset"],
+    { encoding: "utf8" },
+  )
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /Error: Unknown preset "not-a-preset"/)
+  assert.doesNotMatch(result.stderr, /at file:/)
+})
+
+test("CLI reports a missing key with the correct command name", () => {
+  const result = spawnSync(
+    "node",
+    [join(rootPath, "provider-switch.mjs"), "key", "deepinfra"],
+    {
+      env: { ...process.env, DEEPINFRA_API_KEY: "" },
+      encoding: "utf8",
+    },
+  )
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /Set DEEPINFRA_API_KEY before running "omo-router key deepinfra"/)
+  assert.doesNotMatch(result.stderr, /omo-provider/)
 })
 
 test("model discovery normalizes a provider catalog without exposing the key", async () => {
@@ -56,6 +81,15 @@ test("model discovery normalizes a provider catalog without exposing the key", a
   )
   assert.ok(config.models.some((model) => model.id === "vendor/new-model"))
   assert.ok(config.models.some((model) => model.id === "deepseek/deepseek-chat-v3-0324:free"))
+})
+
+test("model discovery reports HTTP catalog failures", async () => {
+  await assert.rejects(
+    fetchProviderModels("deepinfra", "test-key", async () =>
+      new Response("unauthorized", { status: 401 }),
+    ),
+    /Model catalog request failed with HTTP 401/,
+  )
 })
 
 test("installer writes a custom Anthropic provider and DeepInfra aliases", () => {

@@ -77,7 +77,7 @@ function storeKey(provider) {
   const config = getProvider(provider)
   const key = process.env[config.envKey]?.trim()
   if (!key) {
-    console.error(`Set ${config.envKey} before running "omo-provider key ${provider}".`)
+    console.error(`Set ${config.envKey} before running "omo-router key ${provider}".`)
     process.exitCode = 1
     return
   }
@@ -187,4 +187,10 @@ async function main() {
   }
 }
 
-await main()
+try {
+  await main()
+} catch (error) {
+  const message = error instanceof Error ? error.message : String(error)
+  console.error(`Error: ${message}`)
+  process.exitCode = 1
+}

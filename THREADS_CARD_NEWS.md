@@ -60,7 +60,7 @@ npm install --global omo-router
 또는:
 
 ```bash
-npx --yes omo-router@0.1.4 list
+npx --yes omo-router@0.1.5 list
 ```
 
 ## Card 4 — API key 등록
