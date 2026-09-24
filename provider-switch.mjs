@@ -39,13 +39,13 @@ function backup(path) {
 }
 
 function usage() {
-  console.log(`Usage:
-  omo-provider list
-  omo-provider current
-  omo-provider key <provider>
-  omo-provider sync <provider>
-  omo-provider use <provider> [preset]
-  omo-provider use <provider> --model <model-id>
+console.log(`Usage:
+  omo-router list
+  omo-router current
+  omo-router key <provider>
+  omo-router sync <provider>
+  omo-router use <provider> [preset]
+  omo-router use <provider> --model <model-id>
 `)
 }
 
