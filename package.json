@@ -1,0 +1,21 @@
+{
+  "name": "omo-deepinfra-adapter",
+  "private": false,
+  "type": "module",
+  "bin": {
+    "omo-deepinfra-setup": "./setup.mjs"
+  },
+  "files": [
+    "README.md",
+    "get-deepinfra-key.mjs",
+    "install.mjs",
+    "setup.mjs",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "node --test"
+  }
+}
