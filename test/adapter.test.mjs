@@ -30,6 +30,10 @@ test("installer writes a custom Anthropic provider and DeepInfra aliases", () =>
         grok: { model: "xai/grok-4.5" },
         fable: { model: "anthropic/claude-fable-5" },
         opus: { model: "anthropic/claude-opus-5-5" },
+        astra: { model: "openai-codex/gpt-6-astra" },
+        composer: { model: "cursor/composer-2.5" },
+        kimi: { model: "opencode-go/kimi-k3" },
+        router: { model: "openrouter/z-ai/glm-5.2" },
       },
     }),
   )
@@ -61,7 +65,10 @@ test("installer writes a custom Anthropic provider and DeepInfra aliases", () =>
   assert.equal(settings.defaultModel, "deepseek-ai/DeepSeek-V4.1-Flash")
   assert.deepEqual(settings.recommendedModels, ["deepinfra/deepseek-ai/DeepSeek-V4.1-Flash"])
   const omoConfig = readFileSync(join(tempHome, ".omo", "omo.jsonc"), "utf8")
-  assert.doesNotMatch(omoConfig, /(?:xai\/|anthropic\/claude)/)
+  assert.doesNotMatch(
+    omoConfig,
+    /(?:xai|anthropic|openai-codex|cursor|opencode-go|openrouter|vercel-ai-gateway)\//,
+  )
   assert.match(omoConfig, /deepinfra\/deepseek-ai\/DeepSeek-V4\.1-Flash/)
 })
 
