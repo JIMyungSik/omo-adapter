@@ -23,7 +23,7 @@ npm install --global omo-router
 전역 설치 없이 실행:
 
 ```bash
-npx --yes omo-router@0.1.3 --help
+npx --yes omo-router@0.1.4 --help
 ```
 
 현재 `omo-deepinfra-adapter` source checkout 폴더 안에서는 package 이름이
@@ -32,7 +32,7 @@ npx --yes omo-router@0.1.3 --help
 
 ```bash
 cd ~
-npx --yes omo-router@0.1.3 list
+npx --yes omo-router@0.1.4 list
 ```
 
 설정 변경 전 다음 파일을 timestamp backup으로 보관합니다.

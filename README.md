@@ -24,7 +24,7 @@ npm install --global omo-router
 Or run it without a global install:
 
 ```sh
-npx --yes omo-router@0.1.3 --help
+npx --yes omo-router@0.1.4 --help
 ```
 
 If you are inside this source checkout, run `npx` from another directory
@@ -32,7 +32,7 @@ because the checkout itself is named `omo-router`. For example:
 
 ```sh
 cd ~
-npx --yes omo-router@0.1.3 list
+npx --yes omo-router@0.1.4 list
 ```
 
 The CLI creates timestamped backups before changing:
