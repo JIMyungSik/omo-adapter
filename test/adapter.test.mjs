@@ -85,3 +85,51 @@ test("setup stores a key outside the package tree", () => {
   })
   assert.equal(readFileSync(join(tempHome, "agent", "deepinfra-api-key"), "utf8"), "setup-test-key\n")
 })
+
+test("router lists presets and switches provider without printing keys", () => {
+  const tempHome = mkdtempSync(join(homedir(), ".omo-router-test-"))
+  const agentDir = join(tempHome, "agent")
+  mkdirSync(agentDir, { recursive: true })
+  mkdirSync(join(tempHome, ".omo"), { recursive: true })
+  writeFileSync(join(agentDir, "settings.json"), JSON.stringify({ theme: "dark" }))
+  writeFileSync(
+    join(tempHome, ".omo", "omo.jsonc"),
+    JSON.stringify({ models: { fable: { model: "deepinfra/old-model" } } }),
+  )
+  const env = {
+    ...process.env,
+    OMO_DEEPINFRA_HOME: tempHome,
+    OMO_CODING_AGENT_DIR: agentDir,
+  }
+  const listed = execFileSync("node", [join(rootPath, "provider-switch.mjs"), "list"], {
+    env,
+    encoding: "utf8",
+  })
+  assert.match(listed, /openrouter - OpenRouter/)
+  assert.match(listed, /qwen-coder: Qwen\/Qwen3-Coder/)
+
+  const switched = execFileSync(
+    "node",
+    [join(rootPath, "provider-switch.mjs"), "use", "together", "minimax"],
+    { env, encoding: "utf8" },
+  )
+  assert.match(switched, /Active provider: together/)
+  assert.doesNotMatch(switched, /secret|key-value|test-key/)
+
+  const settings = JSON.parse(readFileSync(join(agentDir, "settings.json"), "utf8"))
+  assert.equal(settings.theme, "dark")
+  assert.equal(settings.defaultProvider, "together")
+  assert.equal(settings.defaultModel, "MiniMaxAI/MiniMax-M3")
+  const models = JSON.parse(readFileSync(join(agentDir, "models.json"), "utf8"))
+  assert.equal(models.providers.together.baseUrl, "https://api.together.ai/v1")
+  assert.match(models.providers.together.apiKey, /get-provider-key\.mjs/)
+  assert.match(readFileSync(join(tempHome, ".omo", "omo.jsonc"), "utf8"), /together\/MiniMaxAI/)
+
+  const keyOutput = execFileSync(
+    "node",
+    [join(rootPath, "provider-switch.mjs"), "key", "together"],
+    { env: { ...env, TOGETHER_API_KEY: "do-not-print-this" }, encoding: "utf8" },
+  )
+  assert.doesNotMatch(keyOutput, /do-not-print-this/)
+  assert.equal(readFileSync(join(agentDir, "together-api-key"), "utf8"), "do-not-print-this\n")
+})
