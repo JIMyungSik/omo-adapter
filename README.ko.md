@@ -128,6 +128,10 @@ omo-router use deepinfra deepseek-flash
 omo
 ```
 
+OMO가 이미 실행 중이라면 `key`, `sync`, `use` 실행 후 OMO를 종료하고 다시
+실행하세요. OMO는 시작할 때 provider/model 설정을 읽으므로 재실행해야
+`/model` 목록과 새 기본 모델이 정확히 반영됩니다.
+
 OMO 안에서 다음 명령을 입력합니다.
 
 ```text

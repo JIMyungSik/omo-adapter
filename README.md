@@ -129,6 +129,10 @@ omo-router use deepinfra deepseek-flash
 omo
 ```
 
+If OMO is already running, exit and start it again after `key`, `sync`, or
+`use`. OMO reads the updated provider and model files at startup; restarting
+ensures the `/model` picker shows the new catalog and the new default.
+
 Inside OMO, open the model picker:
 
 ```text
