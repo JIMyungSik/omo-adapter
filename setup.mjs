@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { chmodSync, existsSync, mkdirSync, writeFileSync } from "node:fs"
 import { homedir } from "node:os"
 import { join } from "node:path"
