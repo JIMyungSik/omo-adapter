@@ -89,6 +89,30 @@ export const PROVIDER_PRESETS = {
       "gpt-oss": openAiModel("openai/gpt-oss-120b", "GPT-OSS 120B (Groq)"),
     },
   },
+  opengateway: {
+    label: "OpenGateway",
+    api: "openai-completions",
+    baseUrl: "https://apis.opengateway.ai/v1",
+    envKey: "OPENGATEWAY_API_KEY",
+    defaultPreset: "deepseek-fast",
+    models: {
+      "deepseek-fast": openAiModel(
+        "deepseek/deepseek-v4.1-flash-ultrafast",
+        "DeepSeek V4.1 Flash Ultrafast (OpenGateway)",
+        1000000,
+      ),
+      "gpt-4.1-mini": openAiModel(
+        "openai/gpt-4.1-mini",
+        "GPT-4.1 Mini (OpenGateway)",
+        1047576,
+      ),
+      "claude-sonnet": openAiModel(
+        "anthropic/claude-sonnet-4-6",
+        "Claude Sonnet 4.6 (OpenGateway)",
+        1000000,
+      ),
+    },
+  },
 }
 
 export function getProvider(provider) {

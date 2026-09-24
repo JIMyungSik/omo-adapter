@@ -10,6 +10,7 @@ Research date: 2026-09-24
 | OpenRouter | Repeated Reddit provider recommendations; gateway for many model families | OpenAI-compatible `https://openrouter.ai/api/v1` | `deepseek-free`, `qwen-coder` |
 | Together AI | Listed among commonly used providers in Reddit API discussions | OpenAI-compatible `https://api.together.ai/v1` | `minimax`, `llama` |
 | Groq | Listed among commonly used providers in Reddit API discussions | OpenAI-compatible `https://api.groq.com/openai/v1` | `llama`, `gpt-oss` |
+| OpenGateway | User-requested gateway; official model catalog verified | OpenAI-compatible `https://apis.opengateway.ai/v1` | `deepseek-fast`, `gpt-4.1-mini`, `claude-sonnet` |
 
 ## Evidence and limits
 
@@ -32,6 +33,10 @@ Research date: 2026-09-24
   https://docs.together.ai/docs/inference/openai-compatibility
 - Groq OpenAI compatibility:
   https://console.groq.com/docs/openai
+- OpenGateway official integration:
+  https://opengateway.ai/
+- OpenGateway live model catalog:
+  https://apis.opengateway.ai/v1/models
 - Reddit community signal:
   https://www.reddit.com/r/LocalLLaMA/comments/14s4hou/free_llm_api/
 - Reddit provider discussion:

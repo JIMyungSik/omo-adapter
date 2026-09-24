@@ -9,7 +9,8 @@ repository.
 
 ## What it does
 
-- Registers curated presets for DeepInfra, OpenRouter, Together AI, and Groq.
+- Registers curated presets for DeepInfra, OpenRouter, Together AI, Groq, and
+  OpenGateway.
 - Uses each provider's documented Anthropic-compatible or OpenAI-compatible
   endpoint.
 - Reads keys at request time from environment variables or local 0600 files.
@@ -58,6 +59,7 @@ npx omo-router use deepinfra qwen-coder
 npx omo-router use openrouter deepseek-free
 npx omo-router use together minimax
 npx omo-router use groq llama
+npx omo-router use opengateway deepseek-fast
 npx omo-router current
 ```
 
@@ -67,8 +69,8 @@ Use a model not in the curated catalog with:
 npx omo-router use openrouter --model provider/model-id
 ```
 
-The current default is DeepInfra. OpenRouter, Together AI, and Groq are
-opt-in presets and require their own API keys.
+The current default is DeepInfra. OpenRouter, Together AI, Groq, and
+OpenGateway are opt-in presets and require their own API keys.
 
 ## Manual verification
 

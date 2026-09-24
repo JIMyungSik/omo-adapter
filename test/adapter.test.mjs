@@ -107,6 +107,7 @@ test("router lists presets and switches provider without printing keys", () => {
   })
   assert.match(listed, /openrouter - OpenRouter/)
   assert.match(listed, /qwen-coder: Qwen\/Qwen3-Coder/)
+  assert.match(listed, /opengateway - OpenGateway/)
 
   const switched = execFileSync(
     "node",
@@ -124,6 +125,18 @@ test("router lists presets and switches provider without printing keys", () => {
   assert.equal(models.providers.together.baseUrl, "https://api.together.ai/v1")
   assert.match(models.providers.together.apiKey, /get-provider-key\.mjs/)
   assert.match(readFileSync(join(tempHome, ".omo", "omo.jsonc"), "utf8"), /together\/MiniMaxAI/)
+
+  execFileSync(
+    "node",
+    [join(rootPath, "provider-switch.mjs"), "use", "opengateway", "gpt-4.1-mini"],
+    { env, encoding: "utf8" },
+  )
+  const gatewayModels = JSON.parse(readFileSync(join(agentDir, "models.json"), "utf8"))
+  assert.equal(gatewayModels.providers.opengateway.baseUrl, "https://apis.opengateway.ai/v1")
+  assert.equal(
+    gatewayModels.providers.opengateway.models[1].id,
+    "openai/gpt-4.1-mini",
+  )
 
   const keyOutput = execFileSync(
     "node",
