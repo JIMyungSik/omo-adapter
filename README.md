@@ -11,8 +11,8 @@ the repository.
 - Registers a curated set of DeepSeek, Qwen Coder, and GLM models.
 - Uses DeepInfra's Anthropic Messages-compatible endpoint.
 - Reads an existing CC Switch `DeepInfra DeepSeek` token locally at request time.
-- Restores OMO's Fable/Opus aliases to xAI and sets the native default to
-  DeepInfra so the current xAI quota state cannot break startup.
+- Routes OMO's Fable/Opus aliases and native default to DeepInfra so neither
+  Anthropic OAuth nor xAI quota state can break startup.
 - Supports macOS, Linux, and Windows path conventions.
 
 ## Install

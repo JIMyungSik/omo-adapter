@@ -16,12 +16,22 @@ test("resolver prefers an explicit API key without printing diagnostics", () => 
   assert.equal(result, "test-key")
 })
 
-test("installer writes a custom Anthropic provider and xAI fallback aliases", () => {
+test("installer writes a custom Anthropic provider and DeepInfra aliases", () => {
   const tempHome = mkdtempSync(join(homedir(), ".omo-deepinfra-test-"))
   mkdirSync(join(tempHome, ".omo", "agent"), { recursive: true })
   writeFileSync(
     join(tempHome, ".omo", "agent", "settings.json"),
     JSON.stringify({ defaultProvider: "anthropic", defaultModel: "claude-opus" }),
+  )
+  writeFileSync(
+    join(tempHome, ".omo", "omo.jsonc"),
+    JSON.stringify({
+      models: {
+        grok: { model: "xai/grok-4.5" },
+        fable: { model: "anthropic/claude-fable-5" },
+        opus: { model: "anthropic/claude-opus-5-5" },
+      },
+    }),
   )
   execFileSync("node", [join(rootPath, "install.mjs")], {
     cwd: rootPath,
@@ -50,6 +60,9 @@ test("installer writes a custom Anthropic provider and xAI fallback aliases", ()
   assert.equal(settings.defaultProvider, "deepinfra")
   assert.equal(settings.defaultModel, "deepseek-ai/DeepSeek-V4.1-Flash")
   assert.deepEqual(settings.recommendedModels, ["deepinfra/deepseek-ai/DeepSeek-V4.1-Flash"])
+  const omoConfig = readFileSync(join(tempHome, ".omo", "omo.jsonc"), "utf8")
+  assert.doesNotMatch(omoConfig, /(?:xai\/|anthropic\/claude)/)
+  assert.match(omoConfig, /deepinfra\/deepseek-ai\/DeepSeek-V4\.1-Flash/)
 })
 
 test("setup stores a key outside the package tree", () => {

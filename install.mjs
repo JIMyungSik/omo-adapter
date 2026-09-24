@@ -65,31 +65,14 @@ if (existsSync(settingsPath)) {
 
 if (existsSync(omoConfig)) {
   let text = readFileSync(omoConfig, "utf8")
-  text = text.replace(
-    /("fable"\s*:\s*\{\s*"model"\s*:\s*)"anthropic\/[^"]+"/,
-    '$1"xai/grok-4.5"',
-  )
-  text = text.replace(
-    /("fable-high"\s*:\s*\{\s*"model"\s*:\s*)"anthropic\/[^"]+"/,
-    '$1"xai/grok-4.5"',
-  )
-  text = text.replace(
-    /("fable-med"\s*:\s*\{\s*"model"\s*:\s*)"anthropic\/[^"]+"/,
-    '$1"xai/grok-4.5"',
-  )
-  text = text.replace(
-    /("opus"\s*:\s*\{\s*"model"\s*:\s*)"anthropic\/[^"]+"/,
-    '$1"xai/grok-4.5"',
-  )
-  text = text.replace(
-    /("opus-xhigh"\s*:\s*\{\s*"model"\s*:\s*)"anthropic\/[^"]+"/,
-    '$1"xai/grok-4.5"',
-  )
+  text = text.replaceAll("xai/grok-4.5", "deepinfra/deepseek-ai/DeepSeek-V4.1-Flash")
+  text = text.replaceAll("anthropic/claude-fable-5", "deepinfra/deepseek-ai/DeepSeek-V4.1-Flash")
+  text = text.replaceAll("anthropic/claude-opus-5-5", "deepinfra/deepseek-ai/DeepSeek-V4.1-Flash")
   writeFileSync(omoConfig, text, "utf8")
 }
 
 console.log(`Installed DeepInfra provider for ${platform()}`)
 console.log(`models: ${modelsPath}`)
 console.log(`resolver: ${resolverPath}`)
-console.log("Fable/Opus aliases now use xai/grok-4.5")
+console.log("Fable/Opus aliases now use DeepInfra DeepSeek V4.1 Flash")
 console.log("OMO native default now uses deepinfra/deepseek-ai/DeepSeek-V4.1-Flash")
